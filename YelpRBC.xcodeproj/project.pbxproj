@@ -13,6 +13,7 @@
 		01FAB6DD1DA9A109006907B2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01FAB6DB1DA9A109006907B2 /* Main.storyboard */; };
 		01FAB6DF1DA9A109006907B2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01FAB6DE1DA9A109006907B2 /* Assets.xcassets */; };
 		01FAB6E21DA9A109006907B2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01FAB6E01DA9A109006907B2 /* LaunchScreen.storyboard */; };
+		06235315CABAE3303F0BCD5F /* Pods_YelpRBC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A94653993D45A34742B7F7E /* Pods_YelpRBC.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,9 @@
 		01FAB6DE1DA9A109006907B2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01FAB6E11DA9A109006907B2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01FAB6E31DA9A109006907B2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		094EFE47CC401B042A7FAD53 /* Pods-YelpRBC.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YelpRBC.release.xcconfig"; path = "Pods/Target Support Files/Pods-YelpRBC/Pods-YelpRBC.release.xcconfig"; sourceTree = "<group>"; };
+		28B3D089097E59C3CC72E3DB /* Pods-YelpRBC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YelpRBC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-YelpRBC/Pods-YelpRBC.debug.xcconfig"; sourceTree = "<group>"; };
+		4A94653993D45A34742B7F7E /* Pods_YelpRBC.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_YelpRBC.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -31,6 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06235315CABAE3303F0BCD5F /* Pods_YelpRBC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -42,6 +47,8 @@
 			children = (
 				01FAB6D41DA9A109006907B2 /* YelpRBC */,
 				01FAB6D31DA9A109006907B2 /* Products */,
+				A9105219C133283B8834DEDC /* Pods */,
+				22262DE0D386E81F5ED328E0 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -67,6 +74,23 @@
 			path = YelpRBC;
 			sourceTree = "<group>";
 		};
+		22262DE0D386E81F5ED328E0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4A94653993D45A34742B7F7E /* Pods_YelpRBC.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A9105219C133283B8834DEDC /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				28B3D089097E59C3CC72E3DB /* Pods-YelpRBC.debug.xcconfig */,
+				094EFE47CC401B042A7FAD53 /* Pods-YelpRBC.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -74,9 +98,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 01FAB6E61DA9A109006907B2 /* Build configuration list for PBXNativeTarget "YelpRBC" */;
 			buildPhases = (
+				20042FC3FCC2160F13815C59 /* [CP] Check Pods Manifest.lock */,
 				01FAB6CE1DA9A109006907B2 /* Sources */,
 				01FAB6CF1DA9A109006907B2 /* Frameworks */,
 				01FAB6D01DA9A109006907B2 /* Resources */,
+				F0621EA3EC6910493CE5CE94 /* [CP] Embed Pods Frameworks */,
+				DD28BB7AC3E465D26D3E5382 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -134,6 +161,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		20042FC3FCC2160F13815C59 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		DD28BB7AC3E465D26D3E5382 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YelpRBC/Pods-YelpRBC-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F0621EA3EC6910493CE5CE94 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-YelpRBC/Pods-YelpRBC-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		01FAB6CE1DA9A109006907B2 /* Sources */ = {
@@ -263,6 +338,7 @@
 		};
 		01FAB6E71DA9A109006907B2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 28B3D089097E59C3CC72E3DB /* Pods-YelpRBC.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2627P9MACW;
@@ -276,6 +352,7 @@
 		};
 		01FAB6E81DA9A109006907B2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 094EFE47CC401B042A7FAD53 /* Pods-YelpRBC.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 2627P9MACW;
@@ -306,6 +383,7 @@
 				01FAB6E81DA9A109006907B2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
