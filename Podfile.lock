@@ -1,26 +1,25 @@
 PODS:
   - Alamofire (4.0.1)
-  - p2.OAuth2 (3.0.0)
+  - OAuthSwift (1.0.0)
 
 DEPENDENCIES:
   - Alamofire (~> 4.0)
-  - p2.OAuth2 (from `https://github.com/p2/OAuth2`)
+  - OAuthSwift (from `https://github.com/OAuthSwift/OAuthSwift.git`, branch `swift3.0objc`)
 
 EXTERNAL SOURCES:
-  p2.OAuth2:
-    :git: https://github.com/p2/OAuth2
-    :submodules: true
+  OAuthSwift:
+    :branch: swift3.0objc
+    :git: https://github.com/OAuthSwift/OAuthSwift.git
 
 CHECKOUT OPTIONS:
-  p2.OAuth2:
-    :commit: 5d5e3e1b1a13f39d4dce439fd6dce11bc4ccc721
-    :git: https://github.com/p2/OAuth2
-    :submodules: true
+  OAuthSwift:
+    :commit: e2f886aa639ca2c0c19e82afcba938f9d624a617
+    :git: https://github.com/OAuthSwift/OAuthSwift.git
 
 SPEC CHECKSUMS:
   Alamofire: 7682d43245de14874acd142ec137b144aa1dd335
-  p2.OAuth2: a8f96ecad6a46189b9b193691fea401139e43491
+  OAuthSwift: dd4f502ffd4f6e122b861b5e4529bf6454a30fe6
 
-PODFILE CHECKSUM: 205ebcf0dc696d623b49ba3bcc08ed48c3d8dc28
+PODFILE CHECKSUM: 433b4aac35f5f6b56e8b435bbffd492b367b01ec
 
 COCOAPODS: 1.1.0.rc.2
