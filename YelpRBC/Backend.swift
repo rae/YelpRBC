@@ -15,9 +15,38 @@ class Backend {
 
 	fileprivate	static let apiKey = "v1KQWvOJli4Y69nvfBr4DQ"
 	fileprivate	static let secret = "acNRn4t246u2CWRR3EzG4US38ApoyaRcWb7ouVFXwFwNaYZI4uLz59G4Atz0uMdU"
-	fileprivate	static let apiUrlString = "https://api.yelp.com/v3"
+	fileprivate static let apiTokenUrlString = "https://api.yelp.com/oauth2/token"
+	fileprivate	static let apiUrlString = "https://api.yelp.com/v3/"
 	fileprivate static let searchString = "businesses/search/"
 
+	open func load() {
+		let oauth = OAuth2Swift(consumerKey: Backend.apiKey,
+		                        consumerSecret: Backend.secret,
+		                        authorizeUrl: Backend.apiTokenUrlString,
+		                        responseType: "token")
+//		let urlString = Backend.apiUrlString+Backend.searchString+"?term=delis&latitude=43.7444648&longitude=-79.2026048"
+		let urlString = "https://api.yelp.com/v3/businesses/search?term=delis&latitude=43.7444648&longitude=-79.2026048"
+		let _ = oauth.startAuthorizedRequest(urlString,
+		                                             method: .GET,
+		                                             parameters: [:],
+		                                             success: { (data, urlResponse) in
+														let dataString = String(data: data, encoding: .utf8)
+														print(dataString)
+														},
+		                                             failure: { (oauthError) in
+														print(oauthError)
+														})
+	}
+//		let handle = oauthswift.authorize(
+//			withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
+//			scope: "likes+comments", state:"INSTAGRAM",
+//			success: { credential, response, parameters in
+//				print(credential.oauth_token)
+//			},
+//			failure: { error in
+//				print(error.localizedDescription)
+//			}
+//		)
 //	var loader: OAuth2DataLoader?
 //
 //	let oauth2 = OAuth2CodeGrant(settings: [
