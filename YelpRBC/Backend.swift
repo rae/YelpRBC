@@ -8,8 +8,6 @@
 
 import Foundation
 import Alamofire
-//import p2_OAuth2
-import OAuthSwift
 
 class Backend {
 
@@ -19,68 +17,79 @@ class Backend {
 	fileprivate	static let apiUrlString = "https://api.yelp.com/v3/"
 	fileprivate static let searchString = "businesses/search/"
 
+	var tokenString : String? = nil
+	let urlString = "https://api.yelp.com/v3/businesses/search"
+
 	open func load() {
-		let oauth = OAuth2Swift(consumerKey: Backend.apiKey,
-		                        consumerSecret: Backend.secret,
-		                        authorizeUrl: Backend.apiTokenUrlString,
-		                        responseType: "token")
-//		let urlString = Backend.apiUrlString+Backend.searchString+"?term=delis&latitude=43.7444648&longitude=-79.2026048"
-		let urlString = "https://api.yelp.com/v3/businesses/search?term=delis&latitude=43.7444648&longitude=-79.2026048"
-		let _ = oauth.startAuthorizedRequest(urlString,
-		                                             method: .GET,
-		                                             parameters: [:],
-		                                             success: { (data, urlResponse) in
-														let dataString = String(data: data, encoding: .utf8)
-														print(dataString)
-														},
-		                                             failure: { (oauthError) in
-														print(oauthError)
-														})
+		// the token string returned by the Yelp OAuth server for our client id and secret
+
+		// get the OAuth token, valid for 3 months
+		let req = request("https://api.yelp.com/oauth2/token",
+		                  method: .post,
+		                  parameters: ["client_id":		Backend.apiKey,
+		                               "client_secret":	Backend.secret,
+		                               "grant_type":	"client_credentials"],
+		                  encoding: URLEncoding.httpBody)
+		
+
+		// try to parse the response as JSON data
+		req .responseString(completionHandler: { (response) in
+				print(response)
+			})
+
+			.responseJSON { (response) in
+				print(response.request)  // original URL request
+				print(response.response) // HTTP URL response
+				print(response.data)     // server data
+				print(response.result)   // result of response serialization
+
+				if let JSON = response.result.value {
+					print("JSON: \(JSON)")
+					if let dict = JSON as? Dictionary<String, AnyObject> {
+						self.tokenString = dict["access_token"] as? String
+						print("access_token 1 = \(self.tokenString)")
+						self.loadYelp()
+					}
+				}
+			}
 	}
-//		let handle = oauthswift.authorize(
-//			withCallbackURL: URL(string: "oauth-swift://oauth-callback/instagram")!,
-//			scope: "likes+comments", state:"INSTAGRAM",
-//			success: { credential, response, parameters in
-//				print(credential.oauth_token)
-//			},
-//			failure: { error in
-//				print(error.localizedDescription)
-//			}
-//		)
-//	var loader: OAuth2DataLoader?
-//
-//	let oauth2 = OAuth2CodeGrant(settings: [
-//		"grant_type": "client_credentials",
-//		"client_id": apiKey,
-//		"client_secret": secret,
-//		"authorize_uri": apiUrlString,
-//		"keychain": false,         // if you DON'T want keychain integration
-//		] as OAuth2JSON)
-//
-//	open func load() {
-//		let base = URL(string: Backend.apiUrlString)!
-//		let url = base.appendingPathComponent(Backend.searchString + "Thai?term=restaurants")
-//
-//		var req = oauth2.request(forURL: url)
-//		req.setValue("application/x-www-form-urlencoded; charset=utf-8", forHTTPHeaderField: "Content-Type")
-////		let postString = "grant_type=client_credentials"
-////			+ "&client_id=\(Backend.apiKey)"
-////			+ "&client_secret=\(Backend.secret)"
-////		req.httpBody = postString.data(using: .utf8)
-//
-//		self.loader = OAuth2DataLoader(oauth2: oauth2)
-//		self.loader?.perform(request: req) { response in
-//			do {
-//				let dict = try response.responseJSON()
-//				DispatchQueue.main.async {
-//					print(dict)
-//				}
-//			}
-//			catch let error {
-//				DispatchQueue.main.async {
-//					print(error)
-//				}
-//			}
-//		}
-//	}
+
+	open func loadYelp() {
+		print("access_token 2 = \(self.tokenString)")
+		let s : String
+		if self.tokenString != nil {
+			s = self.tokenString!
+		} else {
+			s = ""
+		}
+		print("s is \(s)")
+
+		// if we didn't get a token, Yelp may be unavailable
+		guard let token = self.tokenString else {
+			return;
+		}
+
+		// OAuth headers
+		let headers: HTTPHeaders = [
+			"Authorization": "Bearer \(token)"
+		]
+
+		// ask for Thai food
+		request(urlString,
+		        method: .get,
+		        parameters: ["term": "Thai",
+		                     "latitude": "43.7444648",
+		                     "longitude": "-79.2026048"],
+		        headers: headers
+			).responseJSON { (response) in
+				print(response.request)  // original URL request
+				print(response.response) // HTTP URL response
+				print(response.data)     // server data
+				print(response.result)   // result of response serialization
+
+				if let JSON = response.result.value {
+					print("JSON: \(JSON)")
+				}
+		}
+	}
 }

@@ -4,7 +4,6 @@ use_frameworks!
 
 target 'YelpRBC' do
 	pod 'Alamofire', '~> 4.0'
-	pod 'OAuthSwift', :git => 'https://github.com/OAuthSwift/OAuthSwift.git', :branch => 'swift3.0objc'
 end
 
 # force targets to be Swift 3 (Alamofire ships without this setting)
