@@ -4,6 +4,7 @@ use_frameworks!
 
 target 'YelpRBC' do
 	pod 'Alamofire', '~> 4.0'
+	pod 'SwiftyJSON'
 end
 
 # force targets to be Swift 3 (Alamofire ships without this setting)
