@@ -7,64 +7,74 @@
 //
 
 import Foundation
+import CoreLocation
 import Alamofire
 import SwiftyJSON
 
-class Backend {
+typealias SearchCompletion = (()->())
 
-	fileprivate	static let apiKey = "v1KQWvOJli4Y69nvfBr4DQ"
-	fileprivate	static let secret = "acNRn4t246u2CWRR3EzG4US38ApoyaRcWb7ouVFXwFwNaYZI4uLz59G4Atz0uMdU"
-	fileprivate static let apiTokenUrlString = "https://api.yelp.com/oauth2/token"
-	fileprivate	static let apiUrlString = "https://api.yelp.com/v3/"
-	fileprivate static let searchPrefix = "businesses/search/"
+@objc class Backend : NSObject, CLLocationManagerDelegate {
 
-	var tokenString : String? = nil
-	var urlString = "https://api.yelp.com/v3/businesses/search"
+	private	static let apiKey = "v1KQWvOJli4Y69nvfBr4DQ"
+	private	static let secret = "acNRn4t246u2CWRR3EzG4US38ApoyaRcWb7ouVFXwFwNaYZI4uLz59G4Atz0uMdU"
+	private static let apiTokenUrlString = "https://api.yelp.com/oauth2/token"
+	private	static let apiUrlString = "https://api.yelp.com/v3/"
+	private static let searchPrefix = "businesses/search/"
 
-	open func search(for term: String) {
-		// the token string returned by the Yelp OAuth server for our client id and secret
+	private let locationManager = CLLocationManager()
+	// dundas square - should instead be stored in CoreData an persist from run to run
+	private var lastLocation = CLLocation(latitude:43.6560852, longitude:-79.3821151)
+	private var tokenString : String? = nil
+	private var urlString = "https://api.yelp.com/v3/businesses/search"
+	public var results : JSON? = nil
 
-		// get the OAuth token, valid for 3 months
+	override init() {
+		super.init()
+		if CLLocationManager.locationServicesEnabled() {
+			locationManager.startUpdatingLocation()
+			locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+			locationManager.distanceFilter = 10.0
+			locationManager.delegate = self
+		}
+	}
+
+	func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+		print("old location: \(self.lastLocation)")
+		self.lastLocation = locations.last!
+		print("new location: \(self.lastLocation)")
+	}
+
+	func fetchToken(andThen completion: @escaping SearchCompletion) {
+		// get the Yelp OAuth token, valid for 3 months; ideally there would be a mechanism
+		// to handle the token expiring
 		let req = request("https://api.yelp.com/oauth2/token",
 		                  method: .post,
 		                  parameters: ["client_id":		Backend.apiKey,
 		                               "client_secret":	Backend.secret,
 		                               "grant_type":	"client_credentials"],
 		                  encoding: URLEncoding.httpBody)
-		
+
 
 		// try to parse the response as JSON data
-		req .responseString(completionHandler: { (response) in
-				print(response)
-			})
-
-			.responseJSON { (response) in
-				print(response.request)  // original URL request
-				print(response.response) // HTTP URL response
-				print(response.data)     // server data
-				print(response.result)   // result of response serialization
-
-				if let JSON = response.result.value {
-					print("JSON: \(JSON)")
-					if let dict = JSON as? Dictionary<String, AnyObject> {
-						self.tokenString = dict["access_token"] as? String
-						print("access_token 1 = \(self.tokenString)")
-						self.searchYelp(for:term)
-					}
-				}
+		req.responseJSON { (response) in
+			if let JSON = response.result.value, let dict = JSON as? Dictionary<String, AnyObject> {
+				self.tokenString = dict["access_token"] as? String
+				completion()
 			}
+		}
 	}
 
-	open func searchYelp(for term: String) {
-		print("access_token 2 = \(self.tokenString)")
-		let s : String
-		if self.tokenString != nil {
-			s = self.tokenString!
+	open func search(for term: String, andThen completion: @escaping SearchCompletion) {
+		if self.tokenString == nil {
+			self.fetchToken {
+				self.searchYelp(for:term, andThen:completion)
+			}
 		} else {
-			s = ""
+			self.searchYelp(for:term, andThen:completion)
 		}
-		print("s is \(s)")
+	}
 
+	open func searchYelp(for term: String, andThen completion: @escaping SearchCompletion) {
 		// if we didn't get a token, Yelp may be unavailable
 		guard let token = self.tokenString else {
 			return;
@@ -75,29 +85,19 @@ class Backend {
 			"Authorization": "Bearer \(token)"
 		]
 
+		let latString = String(format:"%.10f", self.lastLocation.coordinate.latitude)
+		let longString = String(format:"%.10f", self.lastLocation.coordinate.longitude)
+
 		// ask for Thai food
 		request(urlString,
 		        method: .get,
 		        parameters: ["term": term,
-		                     "latitude": "43.7444648",
-		                     "longitude": "-79.2026048"],
+		                     "latitude": latString,
+		                     "longitude": longString],
 		        headers: headers
 			).responseJSON { (response) in
-				print(response.request)  // original URL request
-				print(response.response) // HTTP URL response
-				print(response.data)     // server data
-				print(response.result)   // result of response serialization
-
-				let json = JSON(response.result.value)
-				for business in json["businesses"].arrayValue {
-					print(business["name"])
-				}
-//				if let jsonDict = response.result.value {
-//					print("JSON: \(jsonDict)")
-//					if let dict = jsonDict as? Dictionary<String, AnyObject> {
-//						print("[1] = \(dict["businesses"]?[0])")
-//					}
-//				}
+				self.results = JSON(response.result.value)
+				completion()
 		}
 	}
 	// this list is from https://www.yelp.com/developers/documentation/v2/category_list
